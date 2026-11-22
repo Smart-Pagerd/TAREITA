@@ -4,27 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Aula IA</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
-:root{--c:#7c9cff;--bg:#0f1220;--card:#181c30;--tx:#e8eaf6;--mu:#8b90ad;--r:18px}
+:root{--c:#4dabf7;--bg:#f3f7ff;--card:#fff;--tx:#26304d;--mu:#6b7592;--r:20px}
 *{box-sizing:border-box}
 body{margin:0;font:16px/1.5 Nunito,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden}
 .bg{position:fixed;inset:0;z-index:-1;overflow:hidden}
-.bg i{position:absolute;width:55vmax;height:55vmax;border-radius:50%;background:var(--c);filter:blur(120px);opacity:.2;animation:fl 22s ease-in-out infinite alternate;transition:background 1s}
+.bg i{position:absolute;width:55vmax;height:55vmax;border-radius:50%;background:var(--c);filter:blur(120px);opacity:.32;animation:fl 22s ease-in-out infinite alternate;transition:background 1s}
 .bg i:nth-child(1){top:-20vmax;left:-15vmax}
 .bg i:nth-child(2){bottom:-25vmax;right:-15vmax;animation-delay:-11s}
 @keyframes fl{to{transform:translate(8vmax,6vmax) scale(1.15)}}
 #app{max-width:880px;margin:0 auto;padding:20px}
-h1,h2,h3{font-family:Fraunces,serif;margin:.3em 0}
+h1,h2,h3{font-family:Fredoka,sans-serif;margin:.3em 0}
 header{display:flex;align-items:center;gap:12px;margin-bottom:18px;transition:opacity .8s}
 header h1{flex:1;font-size:1.7rem}
 .mut{color:var(--mu)}
-input,textarea{width:100%;background:#0f1220;color:var(--tx);border:1px solid #2a2f4d;border-radius:12px;padding:12px;font:inherit;margin:6px 0;resize:vertical}
+input,textarea{width:100%;background:#fff;color:var(--tx);border:1.5px solid #dbe3f5;border-radius:12px;padding:12px;font:inherit;margin:6px 0;resize:vertical}
 input:focus,textarea:focus,button:focus-visible{outline:2px solid var(--c);outline-offset:2px}
-.btn{background:var(--c);color:#0f1220;border:0;border-radius:12px;padding:11px 18px;font:800 1rem Nunito;cursor:pointer;transition:transform .15s}
+.btn{background:var(--c);color:#1f2540;border:0;border-radius:12px;padding:11px 18px;font:800 1rem Nunito;cursor:pointer;transition:transform .15s}
 .btn:active{transform:scale(.96)}
-.btn.ghost{background:transparent;color:var(--tx);border:1px solid #2f3556}
+.btn.ghost{background:transparent;color:var(--tx);border:1px solid #d3dcf2}
 .btn.sm{padding:7px 12px;font-size:.9rem}
 .row{display:flex;gap:10px;margin:10px 0;align-items:flex-end;flex-wrap:wrap}
 .row textarea{flex:1;margin:0}
@@ -34,7 +34,7 @@ input:focus,textarea:focus,button:focus-visible{outline:2px solid var(--c);outli
 .sub{background:var(--card);border-radius:var(--r);padding:22px 18px;cursor:pointer;border-top:5px solid var(--c);display:flex;flex-direction:column;gap:8px;transition:transform .2s,box-shadow .2s}
 .sub:hover{transform:translateY(-4px);box-shadow:0 10px 30px -10px var(--c)}
 .sub .ic{font-size:2rem}
-.sub.add{border:2px dashed #2f3556;border-top-width:2px;background:transparent;align-items:center;justify-content:center;color:var(--mu)}
+.sub.add{border:2px dashed #d3dcf2;border-top-width:2px;background:transparent;align-items:center;justify-content:center;color:var(--mu)}
 .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:10px}
 .opt{background:var(--card);border-radius:var(--r);padding:30px 20px;cursor:pointer;display:flex;flex-direction:column;gap:6px;border:1px solid transparent;transition:border-color .2s,transform .2s}
 .opt:hover{border-color:var(--c);transform:translateY(-3px)}
@@ -42,31 +42,31 @@ input:focus,textarea:focus,button:focus-visible{outline:2px solid var(--c);outli
 .list .item{background:var(--card);border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;gap:10px;align-items:center;cursor:pointer;border-left:4px solid var(--c)}
 .list .item.nc{cursor:default}
 .tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
-.tab{background:var(--card);color:var(--tx);border:1px solid #2a2f4d;border-radius:999px;padding:8px 14px;font:600 .9rem Nunito;cursor:pointer;white-space:nowrap}
-.tab.on{background:var(--c);color:#0f1220;border-color:var(--c)}
+.tab{background:var(--card);color:var(--tx);border:1px solid #dbe3f5;border-radius:999px;padding:8px 14px;font:600 .9rem Nunito;cursor:pointer;white-space:nowrap}
+.tab.on{background:var(--c);color:#1f2540;border-color:var(--c)}
 .chat{background:var(--card);border-radius:var(--r);padding:16px;height:50vh;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin:10px 0;transition:box-shadow 1s}
-.msg{max-width:85%;padding:10px 14px;border-radius:14px;background:#232842}
-.msg.user{align-self:flex-end;background:var(--c);color:#0f1220}
+.msg{max-width:85%;padding:10px 14px;border-radius:14px;background:#e9eefb}
+.msg.user{align-self:flex-end;background:var(--c);color:#1f2540}
 .dots span{display:inline-block;width:7px;height:7px;margin:0 2px;border-radius:50%;background:var(--mu);animation:dp 1.2s infinite}
 .dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
 @keyframes dp{50%{transform:translateY(-5px);opacity:.4}}
-body.focus header,body.focus .tabs,body.focus .work .row:last-child{opacity:.06;pointer-events:none}
+body.focus header,body.focus .tabs,body.focus #fin{opacity:.08;pointer-events:none}
 body.focus .chat{box-shadow:0 0 90px -10px var(--c);animation:br 6s ease-in-out infinite}
 @keyframes br{50%{box-shadow:0 0 130px 5px var(--c)}}
-.bar{height:8px;background:#232842;border-radius:9px;overflow:hidden;margin:8px 0}
+.bar{height:8px;background:#e9eefb;border-radius:9px;overflow:hidden;margin:8px 0}
 .bar b{display:block;height:100%;background:var(--c);transition:width .8s}
-.ov{position:fixed;inset:0;background:#080a14cc;backdrop-filter:blur(6px);display:grid;place-items:center;z-index:10;padding:16px}
+.ov{position:fixed;inset:0;background:#eaf0ffd9;backdrop-filter:blur(6px);display:grid;place-items:center;z-index:10;padding:16px}
 .pop{width:100%;max-width:420px;margin:0}
 .pick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.pick i{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;cursor:pointer;font-style:normal;background:#232842;border:2px solid transparent}
-.pick i.on{border-color:#fff}
+.pick i{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;cursor:pointer;font-style:normal;background:#e9eefb;border:2px solid transparent}
+.pick i.on{border-color:#26304d}
 .tm{text-align:center}
 .ringw{position:relative;width:min(80vw,320px);height:min(80vw,320px);margin:20px auto}
 .ringw svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ringw circle{fill:none;stroke-width:7}
-.bgc{stroke:#232842}
+.bgc{stroke:#e9eefb}
 .fg{stroke:var(--c);stroke-linecap:round;transition:stroke-dashoffset 1s linear}
-.time{position:absolute;inset:0;display:grid;place-items:center;font:600 3rem Fraunces}
+.time{position:absolute;inset:0;display:grid;place-items:center;font:600 3rem Fredoka}
 .breath{position:absolute;inset:22%;border-radius:50%;background:var(--c);opacity:0;filter:blur(30px)}
 .brk .breath{opacity:.45;animation:bt 8s ease-in-out infinite}
 @keyframes bt{50%{transform:scale(1.45)}}
@@ -74,6 +74,9 @@ body.focus .chat{box-shadow:0 0 90px -10px var(--c);animation:br 6s ease-in-out 
 @keyframes cf{to{transform:translateY(105vh) rotate(540deg)}}
 .fade{animation:fd .4s ease}
 @keyframes fd{from{opacity:0;transform:translateY(8px)}}
+.card,.sub,.opt,.list .item,.chat{box-shadow:0 8px 24px -12px #4b5b9040}
+.bg i:nth-child(2){background:#ff9ecb}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#ff5c7a;color:#fff;padding:12px 18px;border-radius:14px;z-index:30;max-width:90vw;font-weight:700}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -86,10 +89,25 @@ body.focus .chat{box-shadow:0 0 90px -10px var(--c);animation:br 6s ease-in-out 
 const CFG = { url: 'https://ldjvpentmjlvtxtaneml.supabase.co', key: 'sb_publishable_wnyASW6-EPefXUeSGtx8YA_4Rx0Dc-C' };
 // =======================================================================
 
+function toast(m) {
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = m;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 7000);
+}
+// Muestra cualquier error de la base de datos en pantalla
+const _f = window.fetch;
+window.fetch = async (...a) => {
+  const r = await _f(...a), u = String(a[0]);
+  if (!r.ok && u.includes(CFG.url + '/rest/')) r.clone().json().then(j => {
+    const m = j.message || '';
+    toast(/schema cache|does not exist|relation/.test(m) ? 'Faltan las tablas: pega supabase.sql en el SQL Editor de Supabase y dale Run.'
+      : /row-level|permission/.test(m) ? 'Permiso denegado. Ejecuta supabase.sql y vuelve a iniciar sesión.' : 'Error: ' + m);
+  }).catch(() => {});
+  return r;
+};
 const sb = supabase.createClient(CFG.url, CFG.key);
 const $ = s => document.querySelector(s), app = $('#app');
 const S = { user: null, subj: null, task: null, asst: 'explicador', msgs: [] };
-const COLORS = ['#7c9cff', '#ff8fa3', '#5eead4', '#fbbf24', '#c084fc', '#fb923c'];
+const COLORS = ['#4dabf7', '#ff6b8b', '#2ec4b6', '#ffb627', '#9b6bff', '#ff8a3d'];
 const ICONS = ['📐', '📖', '🔬', '🌍', '🎨', '💻', '🧪', '🎵'];
 const ASST = {
   explicador: ['🧠', 'Explicador', 'Pídeme que te explique el tema paso a paso.'],
@@ -101,7 +119,7 @@ const ASST = {
 const esc = t => String(t ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const md = t => esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
 const accent = c => document.documentElement.style.setProperty('--c', c);
-const bar = t => `<header><button class="btn ghost sm" id="bk">← Volver</button><h1>${t}</h1></header>`;
+const bar = t => (document.body.classList.remove('focus'), `<header><button class="btn ghost sm" id="bk">← Volver</button><h1>${t}</h1></header>`);
 const back = fn => $('#bk').onclick = fn;
 const today = () => new Date().toLocaleDateString('en-CA');
 
@@ -169,7 +187,9 @@ async function home() {
     pick(m, '#pc', v => col = v); pick(m, '#pi', v => ico = v);
     m.querySelector('#ok').onclick = async () => {
       const name = m.querySelector('#nm').value.trim(); if (!name) return;
-      await sb.from('subjects').insert({ name, color: col, icon: ico });
+      const btn = m.querySelector('#ok'); btn.disabled = true;
+      const { error } = await sb.from('subjects').insert({ name, color: col, icon: ico });
+      if (error) { btn.disabled = false; return; }
       m.remove(); home();
     };
   };
@@ -197,7 +217,7 @@ async function doView() {
   $('#go').onclick = async () => {
     const title = $('#tt').value.trim(); if (!title) return $('#tt').focus();
     const { data: t } = await sb.from('tasks').insert({ subject_id: S.subj.id, title, description: $('#td').value.trim() }).select().single();
-    workView(t);
+    if (t) workView(t);
   };
   app.querySelectorAll('.item').forEach(el => el.onclick = () => workView(list.find(t => t.id === el.dataset.id)));
 }
@@ -238,13 +258,12 @@ async function send() {
   const asst = S.asst;
   const add = async (role, content) => {
     const m = { task_id: S.task.id, assistant: asst, role, content };
-    S.msgs.push(m); await sb.from('messages').insert(m);
+    if (asst === S.asst) S.msgs.push(m); await sb.from('messages').insert(m);
   };
   await add('user', text); drawChat(true);
   const { data, error } = await sb.functions.invoke('chat', {
     body: { assistant: asst, subject: S.subj.name, task: S.task.title + '\n' + (S.task.description || ''), messages: S.msgs.map(({ role, content }) => ({ role, content })) }
   });
-  if (asst !== S.asst) return;
   await add('assistant', error || !data?.reply ? '⚠️ No pude responder. Revisa que la Edge Function "chat" y la API key estén configuradas.' : data.reply);
   drawChat();
 }
@@ -286,13 +305,15 @@ async function longView() {
       const per = Math.ceil(total / days);
       if (per > perDay) return m.querySelector('#pe').textContent = `Necesitas ${per} min por día para llegar a tiempo. Sube el máximo por día o la fecha.`;
       const { data: t } = await sb.from('tasks').insert({ subject_id: S.subj.id, title, kind: 'long', due_date: due }).select().single();
+      if (!t) return;
       const rows = []; let left = total;
       for (let i = 0; i < days && left > 0; i++) {
         const d = new Date(today() + 'T12:00'); d.setDate(d.getDate() + i);
         const mins = Math.min(per, left); left -= mins;
         rows.push({ task_id: t.id, day: d.toLocaleDateString('en-CA'), minutes: mins, label: 'Sesión ' + (i + 1) });
       }
-      await sb.from('study_sessions').insert(rows);
+      const ie = (await sb.from('study_sessions').insert(rows)).error;
+      if (ie) { await sb.from('tasks').delete().eq('id', t.id); return; }
       m.remove(); longView();
     };
   };
@@ -301,7 +322,7 @@ async function longView() {
     timer(s, async () => {
       await sb.from('study_sessions').update({ done: true }).eq('id', s.id);
       const { data: rest } = await sb.from('study_sessions').select('id').eq('task_id', s.task_id).eq('done', false);
-      if (!rest.length) await sb.from('tasks').update({ status: 'done', completed_at: new Date().toISOString() }).eq('id', s.task_id);
+      if (rest && !rest.length) await sb.from('tasks').update({ status: 'done', completed_at: new Date().toISOString() }).eq('id', s.task_id);
       longView();
     });
   });
@@ -344,6 +365,7 @@ function timer(ss, after) {
 (async () => {
   const { data } = await sb.auth.getSession();
   S.user = data.session?.user || null;
+  sb.auth.onAuthStateChange(ev => { if (ev === 'SIGNED_OUT') { S.user = null; authView(); } });
   S.user ? home() : authView();
 })();
 </script>
