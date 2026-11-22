@@ -142,6 +142,7 @@ function authView() {
   <p id="msg" class="mut"></p></div>`;
   const go = async up => {
     const e = $('#em').value.trim(), p = $('#pw').value;
+    if (!e || p.length < 6) return $('#msg').textContent = 'Escribe tu correo y una contraseña de mínimo 6 caracteres.';
     const r = up ? await sb.auth.signUp({ email: e, password: p }) : await sb.auth.signInWithPassword({ email: e, password: p });
     if (r.error) return $('#msg').textContent = r.error.message;
     if (up && !r.data.session) return $('#msg').textContent = 'Revisa tu correo para confirmar la cuenta.';
