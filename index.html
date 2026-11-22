@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aula IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--c:#7c9cff;--bg:#0f1220;--card:#181c30;--tx:#e8eaf6;--mu:#8b90ad;--r:18px}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 Nunito,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden}
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden}
+.bg i{position:absolute;width:55vmax;height:55vmax;border-radius:50%;background:var(--c);filter:blur(120px);opacity:.2;animation:fl 22s ease-in-out infinite alternate;transition:background 1s}
+.bg i:nth-child(1){top:-20vmax;left:-15vmax}
+.bg i:nth-child(2){bottom:-25vmax;right:-15vmax;animation-delay:-11s}
+@keyframes fl{to{transform:translate(8vmax,6vmax) scale(1.15)}}
+#app{max-width:880px;margin:0 auto;padding:20px}
+h1,h2,h3{font-family:Fraunces,serif;margin:.3em 0}
+header{display:flex;align-items:center;gap:12px;margin-bottom:18px;transition:opacity .8s}
+header h1{flex:1;font-size:1.7rem}
+.mut{color:var(--mu)}
+input,textarea{width:100%;background:#0f1220;color:var(--tx);border:1px solid #2a2f4d;border-radius:12px;padding:12px;font:inherit;margin:6px 0;resize:vertical}
+input:focus,textarea:focus,button:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.btn{background:var(--c);color:#0f1220;border:0;border-radius:12px;padding:11px 18px;font:800 1rem Nunito;cursor:pointer;transition:transform .15s}
+.btn:active{transform:scale(.96)}
+.btn.ghost{background:transparent;color:var(--tx);border:1px solid #2f3556}
+.btn.sm{padding:7px 12px;font-size:.9rem}
+.row{display:flex;gap:10px;margin:10px 0;align-items:flex-end;flex-wrap:wrap}
+.row textarea{flex:1;margin:0}
+.card{background:var(--card);border-radius:var(--r);padding:20px;margin-bottom:16px}
+.auth{max-width:420px;margin:12vh auto 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.sub{background:var(--card);border-radius:var(--r);padding:22px 18px;cursor:pointer;border-top:5px solid var(--c);display:flex;flex-direction:column;gap:8px;transition:transform .2s,box-shadow .2s}
+.sub:hover{transform:translateY(-4px);box-shadow:0 10px 30px -10px var(--c)}
+.sub .ic{font-size:2rem}
+.sub.add{border:2px dashed #2f3556;border-top-width:2px;background:transparent;align-items:center;justify-content:center;color:var(--mu)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:10px}
+.opt{background:var(--card);border-radius:var(--r);padding:30px 20px;cursor:pointer;display:flex;flex-direction:column;gap:6px;border:1px solid transparent;transition:border-color .2s,transform .2s}
+.opt:hover{border-color:var(--c);transform:translateY(-3px)}
+.opt span{font-size:2rem}.opt small{color:var(--mu)}
+.list .item{background:var(--card);border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;gap:10px;align-items:center;cursor:pointer;border-left:4px solid var(--c)}
+.list .item.nc{cursor:default}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.tab{background:var(--card);color:var(--tx);border:1px solid #2a2f4d;border-radius:999px;padding:8px 14px;font:600 .9rem Nunito;cursor:pointer;white-space:nowrap}
+.tab.on{background:var(--c);color:#0f1220;border-color:var(--c)}
+.chat{background:var(--card);border-radius:var(--r);padding:16px;height:50vh;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin:10px 0;transition:box-shadow 1s}
+.msg{max-width:85%;padding:10px 14px;border-radius:14px;background:#232842}
+.msg.user{align-self:flex-end;background:var(--c);color:#0f1220}
+.dots span{display:inline-block;width:7px;height:7px;margin:0 2px;border-radius:50%;background:var(--mu);animation:dp 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes dp{50%{transform:translateY(-5px);opacity:.4}}
+body.focus header,body.focus .tabs,body.focus .work .row:last-child{opacity:.06;pointer-events:none}
+body.focus .chat{box-shadow:0 0 90px -10px var(--c);animation:br 6s ease-in-out infinite}
+@keyframes br{50%{box-shadow:0 0 130px 5px var(--c)}}
+.bar{height:8px;background:#232842;border-radius:9px;overflow:hidden;margin:8px 0}
+.bar b{display:block;height:100%;background:var(--c);transition:width .8s}
+.ov{position:fixed;inset:0;background:#080a14cc;backdrop-filter:blur(6px);display:grid;place-items:center;z-index:10;padding:16px}
+.pop{width:100%;max-width:420px;margin:0}
+.pick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pick i{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;cursor:pointer;font-style:normal;background:#232842;border:2px solid transparent}
+.pick i.on{border-color:#fff}
+.tm{text-align:center}
+.ringw{position:relative;width:min(80vw,320px);height:min(80vw,320px);margin:20px auto}
+.ringw svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ringw circle{fill:none;stroke-width:7}
+.bgc{stroke:#232842}
+.fg{stroke:var(--c);stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+.time{position:absolute;inset:0;display:grid;place-items:center;font:600 3rem Fraunces}
+.breath{position:absolute;inset:22%;border-radius:50%;background:var(--c);opacity:0;filter:blur(30px)}
+.brk .breath{opacity:.45;animation:bt 8s ease-in-out infinite}
+@keyframes bt{50%{transform:scale(1.45)}}
+.cf{position:fixed;top:-20px;width:10px;height:14px;border-radius:2px;z-index:20;animation:cf 2s ease-in forwards}
+@keyframes cf{to{transform:translateY(105vh) rotate(540deg)}}
+.fade{animation:fd .4s ease}
+@keyframes fd{from{opacity:0;transform:translateY(8px)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i></div>
+<div id="app"></div>
+<script>
+// ====== CONFIGURACIÓN: pega aquí los datos de tu proyecto Supabase ======
+// Supabase > Project Settings > API
+const CFG = { url: 'TU_SUPABASE_URL', key: 'TU_SUPABASE_ANON_KEY' };
+// =======================================================================
+
+const sb = supabase.createClient(CFG.url, CFG.key);
+const $ = s => document.querySelector(s), app = $('#app');
+const S = { user: null, subj: null, task: null, asst: 'explicador', msgs: [] };
+const COLORS = ['#7c9cff', '#ff8fa3', '#5eead4', '#fbbf24', '#c084fc', '#fb923c'];
+const ICONS = ['📐', '📖', '🔬', '🌍', '🎨', '💻', '🧪', '🎵'];
+const ASST = {
+  explicador: ['🧠', 'Explicador', 'Pídeme que te explique el tema paso a paso.'],
+  pistas: ['💡', 'Pistas', 'Te guío con pistas sin darte la respuesta.'],
+  revisor: ['✅', 'Revisor', 'Pega lo que ya hiciste y te lo corrijo.'],
+  resumidor: ['📝', 'Resumidor', 'Pega un texto y lo resumo en ideas clave.'],
+  practicar: ['🎯', 'Practicar', 'Escribe "empezar" y te hago preguntas.']
+};
+const esc = t => String(t ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const md = t => esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+const accent = c => document.documentElement.style.setProperty('--c', c);
+const bar = t => `<header><button class="btn ghost sm" id="bk">← Volver</button><h1>${t}</h1></header>`;
+const back = fn => $('#bk').onclick = fn;
+const today = () => new Date().toLocaleDateString('en-CA');
+
+function modal(h) {
+  const m = document.createElement('div');
+  m.className = 'ov';
+  m.innerHTML = `<div class="card pop fade">${h}</div>`;
+  m.onclick = e => { if (e.target === m) m.remove(); };
+  document.body.appendChild(m);
+  return m;
+}
+function pick(m, sel, cb) {
+  const el = m.querySelector(sel);
+  el.firstElementChild.classList.add('on');
+  el.onclick = e => {
+    const i = e.target.closest('i'); if (!i) return;
+    el.querySelectorAll('i').forEach(x => x.classList.remove('on'));
+    i.classList.add('on'); cb(i.dataset.v);
+  };
+}
+function confetti() {
+  for (let k = 0; k < 28; k++) {
+    const e = document.createElement('i');
+    e.className = 'cf';
+    e.style.cssText = `left:${Math.random() * 100}vw;background:${COLORS[k % 6]};animation-delay:${Math.random() * .5}s`;
+    document.body.appendChild(e);
+    setTimeout(() => e.remove(), 2600);
+  }
+}
+
+// ---------- LOGIN ----------
+function authView() {
+  document.body.classList.remove('focus'); accent(COLORS[0]);
+  app.innerHTML = `<div class="card auth fade"><h1>Aula IA</h1>
+  <p class="mut">Tus materias, tus tareas y un asistente que te ayuda a enfocarte.</p>
+  <input id="em" type="email" placeholder="Correo"><input id="pw" type="password" placeholder="Contraseña (mínimo 6)">
+  <div class="row"><button class="btn" id="li">Entrar</button><button class="btn ghost" id="su">Crear cuenta</button></div>
+  <p id="msg" class="mut"></p></div>`;
+  const go = async up => {
+    const e = $('#em').value.trim(), p = $('#pw').value;
+    const r = up ? await sb.auth.signUp({ email: e, password: p }) : await sb.auth.signInWithPassword({ email: e, password: p });
+    if (r.error) return $('#msg').textContent = r.error.message;
+    if (up && !r.data.session) return $('#msg').textContent = 'Revisa tu correo para confirmar la cuenta.';
+    S.user = r.data.user; home();
+  };
+  $('#li').onclick = () => go(0); $('#su').onclick = () => go(1);
+}
+
+// ---------- MATERIAS ----------
+async function home() {
+  document.body.classList.remove('focus'); accent(COLORS[0]);
+  const { data } = await sb.from('subjects').select('*').order('created_at');
+  const list = data || [];
+  app.innerHTML = `<header><h1>Mis materias</h1><button class="btn ghost sm" id="out">Salir</button></header>
+  <div class="grid fade">${list.map(s => `<div class="sub" data-id="${s.id}" style="--c:${s.color}"><span class="ic">${s.icon}</span><b>${esc(s.name)}</b></div>`).join('')}
+  <div class="sub add" id="add"><span class="ic">＋</span><b>Agregar materia</b></div></div>`;
+  $('#out').onclick = async () => { await sb.auth.signOut(); S.user = null; authView(); };
+  app.querySelectorAll('.sub[data-id]').forEach(el => el.onclick = () => subjView(list.find(s => s.id === el.dataset.id)));
+  $('#add').onclick = () => {
+    let col = COLORS[0], ico = ICONS[0];
+    const m = modal(`<h2>Nueva materia</h2><input id="nm" placeholder="Ej: Matemáticas"><p class="mut">Color</p>
+    <div class="pick" id="pc">${COLORS.map(c => `<i data-v="${c}" style="background:${c}"></i>`).join('')}</div><p class="mut">Ícono</p>
+    <div class="pick" id="pi">${ICONS.map(i => `<i data-v="${i}">${i}</i>`).join('')}</div><button class="btn" id="ok">Crear materia</button>`);
+    pick(m, '#pc', v => col = v); pick(m, '#pi', v => ico = v);
+    m.querySelector('#ok').onclick = async () => {
+      const name = m.querySelector('#nm').value.trim(); if (!name) return;
+      await sb.from('subjects').insert({ name, color: col, icon: ico });
+      m.remove(); home();
+    };
+  };
+}
+
+function subjView(s) {
+  if (s) S.subj = s; s = S.subj;
+  document.body.classList.remove('focus'); accent(s.color);
+  app.innerHTML = `${bar(s.icon + ' ' + esc(s.name))}<div class="opts fade">
+  <div class="opt" id="o1"><span>✏️</span><b>Realizar tarea</b><small>Abre asistentes que te ayudan a hacerla</small></div>
+  <div class="opt" id="o2"><span>🏁</span><b>Tareas finalizadas</b><small>Todo lo que ya completaste</small></div>
+  <div class="opt" id="o3"><span>🗓️</span><b>Largo plazo</b><small>Un plan por días y con pausas</small></div></div>`;
+  back(home); $('#o1').onclick = doView; $('#o2').onclick = doneView; $('#o3').onclick = longView;
+}
+
+// ---------- REALIZAR TAREA ----------
+async function doView() {
+  const { data } = await sb.from('tasks').select('*').eq('subject_id', S.subj.id).eq('kind', 'normal').eq('status', 'in_progress').order('created_at', { ascending: false });
+  const list = data || [];
+  app.innerHTML = `${bar('Realizar tarea')}<div class="card fade"><h2>Nueva tarea</h2>
+  <input id="tt" placeholder="Título de la tarea"><textarea id="td" rows="4" placeholder="Pega el enunciado o describe lo que debes hacer"></textarea>
+  <button class="btn" id="go">Abrir asistentes</button></div>
+  <h3>En progreso</h3><div class="list">${list.map(t => `<div class="item" data-id="${t.id}"><b>${esc(t.title)}</b><span class="mut">Continuar</span></div>`).join('') || '<p class="mut">No tienes tareas en progreso.</p>'}</div>`;
+  back(() => subjView());
+  $('#go').onclick = async () => {
+    const title = $('#tt').value.trim(); if (!title) return $('#tt').focus();
+    const { data: t } = await sb.from('tasks').insert({ subject_id: S.subj.id, title, description: $('#td').value.trim() }).select().single();
+    workView(t);
+  };
+  app.querySelectorAll('.item').forEach(el => el.onclick = () => workView(list.find(t => t.id === el.dataset.id)));
+}
+
+function workView(t) {
+  S.task = t; S.asst = 'explicador';
+  app.innerHTML = `${bar(esc(t.title))}<div class="work fade">
+  <div class="tabs">${Object.entries(ASST).map(([k, v]) => `<button class="tab" data-k="${k}">${v[0]} ${v[1]}</button>`).join('')}</div>
+  <div class="chat" id="ch"></div>
+  <div class="row"><textarea id="in" rows="2" placeholder="Escribe tu duda..."></textarea><button class="btn" id="sd">Enviar</button></div>
+  <div class="row"><button class="btn ghost" id="fo">🌿 Modo enfoque</button><button class="btn" id="fin">✔ Finalizar tarea</button></div></div>`;
+  back(doView);
+  const tabs = app.querySelectorAll('.tab');
+  const sel = k => { S.asst = k; tabs.forEach(b => b.classList.toggle('on', b.dataset.k === k)); loadChat(); };
+  tabs.forEach(b => b.onclick = () => sel(b.dataset.k));
+  $('#sd').onclick = send;
+  $('#in').onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } };
+  $('#fo').onclick = () => { const on = document.body.classList.toggle('focus'); $('#fo').textContent = on ? '☀️ Salir del enfoque' : '🌿 Modo enfoque'; };
+  $('#fin').onclick = async () => {
+    await sb.from('tasks').update({ status: 'done', completed_at: new Date().toISOString() }).eq('id', t.id);
+    confetti(); setTimeout(() => subjView(), 1400);
+  };
+  sel('explicador');
+}
+async function loadChat() {
+  const { data } = await sb.from('messages').select('*').eq('task_id', S.task.id).eq('assistant', S.asst).order('created_at');
+  S.msgs = data || []; drawChat();
+}
+function drawChat(wait) {
+  const ch = $('#ch'); if (!ch) return;
+  ch.innerHTML = (S.msgs.length ? '' : `<p class="mut">${ASST[S.asst][2]}</p>`) +
+    S.msgs.map(m => `<div class="msg ${m.role}">${md(m.content)}</div>`).join('') +
+    (wait ? '<div class="msg"><span class="dots"><span></span><span></span><span></span></span></div>' : '');
+  ch.scrollTop = ch.scrollHeight;
+}
+async function send() {
+  const inp = $('#in'), text = inp.value.trim(); if (!text) return; inp.value = '';
+  const asst = S.asst;
+  const add = async (role, content) => {
+    const m = { task_id: S.task.id, assistant: asst, role, content };
+    S.msgs.push(m); await sb.from('messages').insert(m);
+  };
+  await add('user', text); drawChat(true);
+  const { data, error } = await sb.functions.invoke('chat', {
+    body: { assistant: asst, subject: S.subj.name, task: S.task.title + '\n' + (S.task.description || ''), messages: S.msgs.map(({ role, content }) => ({ role, content })) }
+  });
+  if (asst !== S.asst) return;
+  await add('assistant', error || !data?.reply ? '⚠️ No pude responder. Revisa que la Edge Function "chat" y la API key estén configuradas.' : data.reply);
+  drawChat();
+}
+
+// ---------- FINALIZADAS ----------
+async function doneView() {
+  const { data } = await sb.from('tasks').select('*').eq('subject_id', S.subj.id).eq('status', 'done').order('completed_at', { ascending: false });
+  app.innerHTML = `${bar('Tareas finalizadas')}<div class="list fade">${(data || []).map(t => `<div class="item nc"><b>${esc(t.title)}</b><span class="mut">${t.kind === 'long' ? 'Largo plazo · ' : ''}${new Date(t.completed_at || t.created_at).toLocaleDateString('es')}</span></div>`).join('') || '<p class="mut">Aún no has finalizado ninguna tarea en esta materia.</p>'}</div>`;
+  back(() => subjView());
+}
+
+// ---------- LARGO PLAZO ----------
+async function longView() {
+  const { data: ts } = await sb.from('tasks').select('*').eq('subject_id', S.subj.id).eq('kind', 'long').eq('status', 'in_progress').order('due_date');
+  const tasks = ts || [];
+  let ss = [];
+  if (tasks.length) ss = (await sb.from('study_sessions').select('*').in('task_id', tasks.map(t => t.id)).order('day')).data || [];
+  app.innerHTML = `${bar('Largo plazo')}<div class="fade">
+  <button class="btn" id="np">＋ Planear una tarea larga</button>
+  ${tasks.map(t => {
+    const mine = ss.filter(x => x.task_id === t.id), dn = mine.filter(x => x.done).length;
+    return `<div class="card" style="margin-top:14px"><h3>${esc(t.title)}</h3><span class="mut">Entrega: ${t.due_date}</span>
+    <div class="bar"><b style="width:${mine.length ? dn / mine.length * 100 : 0}%"></b></div><span class="mut">${dn} de ${mine.length} sesiones</span>
+    <div class="list" style="margin-top:10px">${mine.map(x => `<div class="item nc" style="opacity:${x.done ? .5 : 1}"><span><b>${esc(x.label)}</b> · ${x.day} · ${x.minutes} min</span>
+    ${x.done ? '✅' : `<button class="btn sm" data-s="${x.id}">Empezar</button>`}</div>`).join('')}</div></div>`;
+  }).join('')}</div>`;
+  back(() => subjView());
+  $('#np').onclick = () => {
+    const m = modal(`<h2>Plan a largo plazo</h2><input id="pt" placeholder="¿Qué tarea es?">
+    <p class="mut">Fecha de entrega</p><input id="pd" type="date" min="${today()}">
+    <p class="mut">Tiempo total que necesitas (minutos)</p><input id="pm" type="number" value="180" min="10">
+    <p class="mut">Máximo por día (minutos)</p><input id="pp" type="number" value="90" min="10">
+    <p class="mut" id="pe"></p><button class="btn" id="ok">Crear plan</button>`);
+    m.querySelector('#ok').onclick = async () => {
+      const title = m.querySelector('#pt').value.trim(), due = m.querySelector('#pd').value;
+      const total = +m.querySelector('#pm').value, perDay = +m.querySelector('#pp').value;
+      if (!title || !due || !total) return m.querySelector('#pe').textContent = 'Completa el título, la fecha y el tiempo.';
+      const days = Math.max(1, Math.round((new Date(due + 'T12:00') - new Date(today() + 'T12:00')) / 864e5) + 1);
+      const per = Math.ceil(total / days);
+      if (per > perDay) return m.querySelector('#pe').textContent = `Necesitas ${per} min por día para llegar a tiempo. Sube el máximo por día o la fecha.`;
+      const { data: t } = await sb.from('tasks').insert({ subject_id: S.subj.id, title, kind: 'long', due_date: due }).select().single();
+      const rows = []; let left = total;
+      for (let i = 0; i < days && left > 0; i++) {
+        const d = new Date(today() + 'T12:00'); d.setDate(d.getDate() + i);
+        const mins = Math.min(per, left); left -= mins;
+        rows.push({ task_id: t.id, day: d.toLocaleDateString('en-CA'), minutes: mins, label: 'Sesión ' + (i + 1) });
+      }
+      await sb.from('study_sessions').insert(rows);
+      m.remove(); longView();
+    };
+  };
+  app.querySelectorAll('[data-s]').forEach(b => b.onclick = () => {
+    const s = ss.find(x => x.id === b.dataset.s);
+    timer(s, async () => {
+      await sb.from('study_sessions').update({ done: true }).eq('id', s.id);
+      const { data: rest } = await sb.from('study_sessions').select('id').eq('task_id', s.task_id).eq('done', false);
+      if (!rest.length) await sb.from('tasks').update({ status: 'done', completed_at: new Date().toISOString() }).eq('id', s.task_id);
+      longView();
+    });
+  });
+}
+
+// ---------- TEMPORIZADOR DE ENFOQUE ----------
+function timer(ss, after) {
+  const seq = []; let rem = ss.minutes;
+  while (rem > 0) {
+    const w = Math.min(25, rem); seq.push({ t: 'w', s: w * 60 }); rem -= w;
+    if (rem > 0) seq.push({ t: 'b', s: 300 });
+  }
+  const works = seq.filter(x => x.t === 'w').length;
+  let i = 0, left = seq[0].s, run = true;
+  const o = document.createElement('div'); o.className = 'ov';
+  o.innerHTML = `<div class="tm"><p id="tl" class="mut"></p><div class="ringw"><svg viewBox="0 0 200 200"><circle class="bgc" cx="100" cy="100" r="90"/><circle id="rg" class="fg" cx="100" cy="100" r="90" stroke-dasharray="565.5"/></svg><div class="breath"></div><div class="time" id="tt"></div></div>
+  <div class="row" style="justify-content:center"><button class="btn ghost" id="pp">Pausar</button><button class="btn ghost" id="ex">Salir</button></div></div>`;
+  document.body.appendChild(o);
+  const draw = () => {
+    const c = seq[i], mm = String(Math.floor(left / 60)).padStart(2, '0'), s = String(left % 60).padStart(2, '0');
+    o.querySelector('#tt').textContent = mm + ':' + s;
+    o.querySelector('#rg').style.strokeDashoffset = 565.5 * left / c.s;
+    o.classList.toggle('brk', c.t === 'b');
+    o.querySelector('#tl').textContent = c.t === 'w' ? `Bloque ${seq.slice(0, i + 1).filter(x => x.t === 'w').length} de ${works} · enfócate` : 'Pausa · respira con el círculo';
+  };
+  const iv = setInterval(() => {
+    if (!run) return;
+    if (--left <= 0) {
+      if (++i >= seq.length) { clearInterval(iv); o.remove(); confetti(); return after(); }
+      left = seq[i].s;
+    }
+    draw();
+  }, 1000);
+  o.querySelector('#pp').onclick = e => { run = !run; e.target.textContent = run ? 'Pausar' : 'Continuar'; };
+  o.querySelector('#ex').onclick = () => { clearInterval(iv); o.remove(); };
+  draw();
+}
+
+// ---------- INICIO ----------
+(async () => {
+  const { data } = await sb.auth.getSession();
+  S.user = data.session?.user || null;
+  S.user ? home() : authView();
+})();
+</script>
+</body>
+</html>
