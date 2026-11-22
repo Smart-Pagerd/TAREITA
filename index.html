@@ -262,9 +262,15 @@ async function send() {
   };
   await add('user', text); drawChat(true);
   const { data, error } = await sb.functions.invoke('chat', {
-    body: { assistant: asst, subject: S.subj.name, task: S.task.title + '\n' + (S.task.description || ''), messages: S.msgs.map(({ role, content }) => ({ role, content })) }
+    body: { assistant: asst, subject: S.subj.name, task: S.task.title + '\n' + (S.task.description || ''), messages: S.msgs.filter(m => !m.err).map(({ role, content }) => ({ role, content })) }
   });
-  await add('assistant', error || !data?.reply ? '⚠️ No pude responder. Revisa que la Edge Function "chat" y la API key estén configuradas.' : data.reply);
+  if (error || !data?.reply) {
+    let d = '';
+    try { d = (await error.context.json()).error || ''; } catch { d = error?.message || ''; }
+    if (asst === S.asst) S.msgs.push({ role: 'assistant', err: true, content: '⚠️ No pude responder.' + (d ? '\n\nDetalle: ' + d : '') });
+    return drawChat();
+  }
+  await add('assistant', data.reply);
   drawChat();
 }
 
